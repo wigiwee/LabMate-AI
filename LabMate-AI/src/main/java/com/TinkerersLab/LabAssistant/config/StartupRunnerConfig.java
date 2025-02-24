@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.TinkerersLab.LabAssistant.service.IngestionService;
-import com.TinkerersLab.LabAssistant.util.Utils;
+import com.TinkerersLab.LabAssistant.utils.Utils;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
