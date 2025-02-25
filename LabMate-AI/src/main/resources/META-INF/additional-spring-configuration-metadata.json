@@ -74,6 +74,16 @@
             "name": "labmate.vectorStore.indexListSize",
             "type": "java.lang.String",
             "description": "A description for 'labmate.vectorStore.indexListSize'"
+        },
+        {
+            "name": "reranking.provider.apiKey",
+            "type": "java.lang.String",
+            "description": "A description for 'reranking.provider.apiKey'"
+        },
+        {
+            "name": "reranking.provider.modelName",
+            "type": "java.lang.String",
+            "description": "A description for 'reranking.provider.modelName'"
         }
     ]
 }

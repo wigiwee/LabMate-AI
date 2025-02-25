@@ -54,7 +54,7 @@ public class StartupRunnerConfig {
             }
 
             for (String path : ApplicationConstants.DEFAULT_RESOURCE_PATH) {
-                ingestionService.ingest(path);
+                ingestionService.ingest(path, 500);
                 log.info("All files ingested from " + path);
             }
 

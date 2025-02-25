@@ -1,22 +1,28 @@
 package com.TinkerersLab.LabAssistant.config;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.TinkerersLab.LabAssistant.config.properties.LLMProviderProperties;
+import com.TinkerersLab.LabAssistant.config.properties.ReRankingProviderProperties;
 import com.TinkerersLab.LabAssistant.config.properties.VectorStoreProperties;
 import com.TinkerersLab.LabAssistant.model.llm.RagAiAssistant;
 
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.cohere.CohereScoringModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
 import dev.langchain4j.rag.DefaultRetrievalAugmentor;
 import dev.langchain4j.rag.RetrievalAugmentor;
+import dev.langchain4j.rag.content.aggregator.ContentAggregator;
+import dev.langchain4j.rag.content.aggregator.ReRankingContentAggregator;
 import dev.langchain4j.rag.content.injector.DefaultContentInjector;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.rag.query.transformer.ExpandingQueryTransformer;
@@ -37,6 +43,8 @@ public class ApplicationConfiguration {
     LLMProviderProperties llmProviderProperties;
 
     VectorStoreProperties vectorStoreProperties;
+
+    ReRankingProviderProperties reRankingProviderProperties;
 
     @Bean
     EmbeddingModel embeddingModel() {
@@ -66,6 +74,14 @@ public class ApplicationConfiguration {
     }
 
     @Bean
+    CohereScoringModel scoringModel() {
+        return CohereScoringModel.builder()
+                .apiKey(reRankingProviderProperties.getApiKey())
+                .modelName(reRankingProviderProperties.getModelName())
+                .build();
+    }
+
+    @Bean
     RagAiAssistant ragAiAssistant() {
         EmbeddingStoreContentRetriever contentRetriever = EmbeddingStoreContentRetriever.builder()
                 .embeddingStore(embeddingStore())
@@ -78,10 +94,21 @@ public class ApplicationConfiguration {
                 .metadataKeysToInclude(List.of("file_name", "index"))
                 .build();
 
+        ContentAggregator contentAggregator = ReRankingContentAggregator.builder()
+                .scoringModel(scoringModel())
+                .querySelector(queryToContent -> {
+                    return queryToContent.entrySet().stream()
+                            .max(Comparator.comparingInt(entry -> entry.getValue().size()))
+                            .map(Map.Entry::getKey)
+                            .orElseThrow(() -> new IllegalArgumentException("No queries found"));
+                })
+                .minScore(0.8)
+                .build();
+
         RetrievalAugmentor retrievalAugmentor = DefaultRetrievalAugmentor.builder()
                 .contentRetriever(contentRetriever)
                 .contentInjector(contentInjector)
-                .contentAggregator(null)
+                .contentAggregator(contentAggregator)
                 .queryTransformer(new ExpandingQueryTransformer(chatLanguageModel()))
                 .build();
 

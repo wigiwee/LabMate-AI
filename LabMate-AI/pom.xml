@@ -41,11 +41,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -55,6 +57,17 @@
 		<dependency>
 			<groupId>dev.langchain4j</groupId>
 			<artifactId>langchain4j</artifactId>
+			<version>1.0.0-beta1</version>
+		</dependency>
+
+		<!-- <dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-jina</artifactId>
+			<version>1.0.0-beta1</version>
+		</dependency> -->
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-cohere</artifactId>
 			<version>1.0.0-beta1</version>
 		</dependency>
 

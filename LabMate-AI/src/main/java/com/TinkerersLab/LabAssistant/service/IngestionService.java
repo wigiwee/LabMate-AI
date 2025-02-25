@@ -31,7 +31,7 @@ public class IngestionService {
 
     EmbeddingStore<TextSegment> embeddingStore;
 
-    public void ingest(String path) throws IngestionFailedException {
+    public void ingest(String path, int chunkSize) throws IngestionFailedException {
 
         File[] files = (new File(path)).listFiles();
         List<Document> docs = new ArrayList<>();
@@ -40,7 +40,7 @@ public class IngestionService {
             docs.add(loadDocument(file.getAbsolutePath()));
         }
         EmbeddingStoreIngestor ingestor = EmbeddingStoreIngestor.builder()
-                .documentSplitter(DocumentSplitters.recursive(400, 50))
+                .documentSplitter(DocumentSplitters.recursive(chunkSize, 50))
                 .embeddingModel(embeddingModel)
                 .embeddingStore(embeddingStore)
                 .build();

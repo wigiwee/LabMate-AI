@@ -2,11 +2,11 @@ package com.TinkerersLab.LabAssistant.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
+@AllArgsConstructor
 @ConfigurationProperties(prefix = "labmate.vector-store")
 public class VectorStoreProperties {
 

@@ -22,6 +22,7 @@ public class ChatController {
 
     @PostMapping("/ask")
     public String chat(@RequestBody ChatRequest chatRequest) {
+        log.info("received request at /api/v1/llm/ask with prompt " + chatRequest.question());
         return new String(ragAiService.chat(chatRequest));
     }
 }
